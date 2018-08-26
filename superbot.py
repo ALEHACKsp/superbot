@@ -63,6 +63,7 @@ async def on_message(message):
     if message.author == client.user:
         return
 
+    # repeat message chain
     if len(messages) > 0 and messages[0] == message.content:
         messages.append(message.content)
         if len(messages) % 3 == 0:
@@ -71,9 +72,16 @@ async def on_message(message):
         messages.clear()
         messages.append(message.content)
 
+    # answering questions
     if client.user in message.mentions:
         if message.content.endswith('?'):
-            await client.send_message(message.channel, random.choice(answers))
+            if ' ou ' in message.content:
+                choices = message.content.split(' ou ')
+                choices[0] = choices[0].split(' ', 1)[1]
+                choices[len(choices) - 1] = choices[len(choices) - 1][:-1]
+                await client.send_message(message.channel, random.choice(choices))
+            else:
+                await client.send_message(message.channel, random.choice(answers))
 
     await client.process_commands(message)
 
