@@ -5,6 +5,7 @@ import asyncio
 import random
 import requests
 
+messages = []
 client = commands.Bot(command_prefix='.')
 
 @client.event
@@ -18,10 +19,10 @@ async def clear(ctx, number : int):
     elif number > 99: number = 99
 
     number += 1
-    messages = []
+    old_messages = []
     async for message in client.logs_from(ctx.message.channel, limit = number):
-        messages.append(message)
-    await client.delete_messages(messages)
+        old_messages.append(message)
+    await client.delete_messages(old_messages)
 
 @client.command()
 async def presence(name: str):
@@ -54,6 +55,13 @@ async def choose(*choices : str):
 
 @client.event
 async def on_message(message):
+    if len(messages) > 0 and messages[0] == message:
+        messages.append(message)
+        if len(messages) % 3 == 0:
+            client.say(message)
+    else:
+        messages.clear()
+        messages.append(message)
     await client.process_commands(message)
 
 client.run(os.environ.get('BOT_TOKEN'))
