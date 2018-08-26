@@ -55,13 +55,17 @@ async def choose(*choices : str):
 
 @client.event
 async def on_message(message):
-    if len(messages) > 0 and messages[0] == message:
-        messages.append(message)
+    if message.author == client.user:
+        return
+
+    if len(messages) > 0 and messages[0] == message.content:
+        messages.append(message.content)
         if len(messages) % 3 == 0:
-            client.say(message)
+            await client.send_message(message.channel, message.content)
     else:
         messages.clear()
-        messages.append(message)
+        messages.append(message.content)
+    
     await client.process_commands(message)
 
 client.run(os.environ.get('BOT_TOKEN'))
