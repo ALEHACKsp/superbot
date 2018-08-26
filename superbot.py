@@ -4,10 +4,8 @@ from discord.ext import commands
 import asyncio
 import random
 import requests
-from boto.s3.connection import S3Connection
 
 client = commands.Bot(command_prefix='.')
-s3 = S3Connection(os.environ['S3_KEY'], os.environ['S3_SECRET'])
 
 @client.event
 async def on_ready():
